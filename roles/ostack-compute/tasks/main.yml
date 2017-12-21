@@ -5,8 +5,14 @@
   notify: restart openstack-nova-compute
 
 - name: Nova configuration
-  template: src=nova.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
+  template: src=nova_compute.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
   notify: restart openstack-nova-compute
+  when: "'controller' not in groupnames"
+
+- name: Nova configuration
+  template: src=nova_control.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
+  notify: restart openstack-nova-compute
+  when: "'controller' in groupnames"
 
 - name: Check Compute services are up and running
   service:
