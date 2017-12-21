@@ -1,0 +1,14 @@
+---
+ - hosts: compute
+   become: yes
+   roles:
+        - common
+        - ostack-common
+        - ostack-compute
+
+ - hosts: controller
+   become: yes
+   tasks:
+        - name: Discover compute hosts
+          shell: 'nova-manage cell_v2 discover_hosts --verbose'
+          become_user: nova

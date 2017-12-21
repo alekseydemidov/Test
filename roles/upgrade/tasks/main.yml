@@ -1,0 +1,8 @@
+- name: Actual system updating
+  yum:
+    name: '*'
+    state: latest
+  notify:
+    - Activate SELinux restore
+    - restart system
+    - waiting for coming back

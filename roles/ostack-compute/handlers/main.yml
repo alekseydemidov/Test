@@ -1,0 +1,8 @@
+- name: restart openstack-nova-compute
+  service:
+        name: "{{ item }}"
+        enabled: yes
+        state: restarted
+  with_items:
+        - libvirtd.service
+        - openstack-nova-compute.service

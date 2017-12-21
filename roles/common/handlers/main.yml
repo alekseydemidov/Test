@@ -1,0 +1,12 @@
+- name: restart ntpd
+  service:
+        name: ntpd
+        enabled: yes
+        state: restarted
+
+- name: restart rsyslog
+  service:
+        name: rsyslog
+        enabled: yes
+        state: restarted
+

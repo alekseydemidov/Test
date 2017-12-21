@@ -1,0 +1,82 @@
+---
+- name: Glance DB creation
+  mysql_db:
+        name: "{{ glance.db_name }}"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+- name: Glance Grant proper access
+  mysql_user:
+        name: "{{glance.db_user}}"
+        password: "{{glance.db_passwd}}"
+        host: "{{ item }}"
+        priv: "{{ glance.db_name }}.*:ALL"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+  with_items:
+        - "{{ mysql.host }}"
+        - "%"
+  notify: Reload db privileges
+
+- name: Glance user creation
+  os_user:
+        name: "{{glance.user}}"
+        password: "{{glance.passwd}}"
+        update_password: on_create
+        description: Glance Service Account
+        domain: default
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: Add the admin role to the glance user and service project
+  os_user_role:
+        role: admin
+        user: "{{glance.user}}"
+        project: service
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: Glance service entity creation
+  os_keystone_service:
+        name: glance
+        service_type: image
+        description: OpenStack Image Service
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: Create the Image service API endpoints
+  os_keystone_endpoint:
+        service: glance
+        interface: "{{item}}"
+        url: http://{{controller.private_fqdn}}:9292
+        region: RegionOne
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+  with_items: ['public', 'internal', 'admin']
+
+- name: Glance install packages
+  yum:
+      name: openstack-glance
+      state: present
+  notify:
+      - Glance DB sync
+      - restart openstack-glance-api
+      - restart openstack-glance-registry
+
+- name: Glance-api configuration
+  template: src=glance-api.conf dest=/etc/glance/glance-api.conf owner=root group=glance backup=yes
+  notify: restart openstack-glance-api
+
+- name: Glance-registry configuration
+  template: src=glance-registry.conf dest=/etc/glance/glance-registry.conf owner=root group=glance backup=yes
+  notify: restart openstack-glance-registry
+
+- name: Force all notified handlers
+  meta: flush_handlers

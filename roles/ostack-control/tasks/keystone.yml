@@ -1,0 +1,63 @@
+---
+- name: Keystone DB creation
+  mysql_db:
+        name: "{{ keystone.db_name }}"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+- name: Keystone Grant proper access
+  mysql_user:
+        name: "{{keystone.db_user}}"
+        password: "{{keystone.db_passwd}}"
+        host: "{{ item }}"
+        priv: "{{ keystone.db_name }}.*:ALL"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+  with_items:
+        - "{{ mysql.host }}"
+        - "%"
+  notify: Reload db privileges
+
+- name: Keystone install packages
+  yum:
+      name: openstack-keystone, httpd, mod_wsgi
+      state: present
+  notify:
+      - Keystone DB sync
+      - Populate the Identity service database
+      - restart httpd
+
+- name: Keystone configuration
+  template: src=keystone.conf dest=/etc/keystone/keystone.conf owner=root group=keystone backup=yes
+  notify: restart httpd
+
+- name: Create a symlink to the wsgi-keystone.conf
+  file:
+      src: /usr/share/keystone/wsgi-keystone.conf
+      dest: /etc/httpd/conf.d/wsgi-keystone.conf
+      state: link
+  notify: restart httpd
+
+- name: Apache configuration
+  lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      backup: yes
+      state: present
+      regexp: '^ServerName '
+      insertafter: '^#ServerName '
+      line: 'ServerName "{{controller.private_fqdn}}"'
+  notify: restart httpd
+
+- name: Force all notified handlers
+  meta: flush_handlers
+
+- name: Create the service project #openstack project create --domain default --description "Service Project" service
+  os_project:
+        name: service
+        description: Service Project
+        domain_id: default
+        state: present
+  environment: "{{OS_ENVIROMENT}}"

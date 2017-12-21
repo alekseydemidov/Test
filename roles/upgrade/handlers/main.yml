@@ -1,0 +1,13 @@
+- name: Activate SELinux restore
+  file:
+      name: /.autorelabel
+      state: touch
+  when: ansible_selinux['mode'] == 'enforcing'
+
+- name: restart system
+  shell: nohup bash -c "sleep 2s && reboot" &
+
+- name: waiting for coming back
+  wait_for_connection:
+    delay=20
+    timeout=180

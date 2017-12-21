@@ -1,0 +1,33 @@
+---
+- name: Set Root password if needed
+  mysql_user:
+        name: root
+        password: "{{ mysql.root_passwd }}"
+        state: present
+  changed_when: False
+  ignore_errors: True
+  no_log: True
+  notify: Reload db privileges
+
+- name: Remove anonymous users
+  command: 'mysql -uroot -p"{{ mysql.root_passwd }}" -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User=''
+  changed_when: False
+  notify: Reload db privileges
+
+- name: Disallow root login remotely
+  command: 'mysql -uroot -p"{{ mysql.root_passwd }}" -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+  changed_when: False
+  notify: Reload db privileges
+
+- name: Remove Test database and access to it
+  mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_host: "{{ mysql.host }}"
+        login_password: "{{ mysql.root_passwd }}"
+  notify: Reload db privileges

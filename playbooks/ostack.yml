@@ -1,0 +1,28 @@
+---
+ - hosts: controller
+   become: yes
+   roles:
+        - common
+        - ostack-common
+        - ostack-control
+
+ - hosts: compute
+   become: yes
+   roles:
+        - common
+        - ostack-common
+        - ostack-compute
+
+ - hosts: network
+   become: yes
+   roles:
+        - common
+        - ostack-common
+        - ostack-network
+
+ - hosts: storage
+   become: yes
+   roles:
+        - common
+        - ostack-common
+        - ostack-storage

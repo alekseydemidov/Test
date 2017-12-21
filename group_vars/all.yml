@@ -1,0 +1,32 @@
+controller:
+    private_fqdn: crash.cloud.local
+    external_fqdn: os.cloud.lan
+mysql:
+    host: localhost
+    root_user: root
+    root_passwd: qwerty123
+rabbitmq:
+    user: openstack
+    passwd: rabbit_protect911
+keystone:
+    db_name: keystone
+    db_user: keystone
+    db_passwd: protect_keystone
+    admin_passwd: protect
+glance:
+    db_name: glance
+    db_user: glance
+    db_passwd: protect_glance
+    user: glance
+    passwd: protect_glance
+nova:
+    db_name: nova
+    db_api_name: nova_api
+    db_cell0_name: nova_cell0
+    db_user: nova
+    db_passwd: protect_nova
+    user: nova
+    passwd: protect_nova
+    placement_user: placement
+    placement_passwd: protect_placement
+
