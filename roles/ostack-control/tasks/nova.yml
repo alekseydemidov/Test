@@ -123,7 +123,21 @@
   notify: restart openstack-nova
 
 - name: Enable access to the Placement API
-  copy: src=00-nova-placement-api.conf dest=/etc/httpd/conf.d/00-nova-placement-api.conf
+  blockinfile: 
+        block: | 
+          <Directory /usr/bin>
+            <IfVersion >= 2.4>
+                Require all granted
+            </IfVersion>
+            <IfVersion < 2.4>
+                Order allow,deny
+                Allow from all
+            </IfVersion>
+          </Directory>
+        dest: /etc/httpd/conf.d/00-nova-placement-api.conf
+        marker: "# {mark} Enable access to the Placement API"
+        state: present
+        backup: yes 
   notify: restart httpd
 
 - name: Force all notified handlers
