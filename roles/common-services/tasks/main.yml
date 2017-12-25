@@ -35,3 +35,20 @@
   notify:
      - restart rsyslog
 
+- name: Enable the OpenStack repository
+  yum:
+    name: centos-release-openstack-pike
+    state: present
+
+- name: Install Openstack client and SELinux policies
+  yum:
+    name: python-openstackclient, openstack-selinux
+    state: present
+
+- name: Upgrading pip
+  pip: name=pip state=latest 
+
+- name: Install required python modules for cloud management
+  pip:
+    name: shade
+    state: present

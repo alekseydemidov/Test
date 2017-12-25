@@ -143,3 +143,14 @@
 - name: Force all notified handlers
   meta: flush_handlers
 
+- name: Check Compute services are up and running
+  service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+  with_items:
+        - openstack-nova-api.service
+        - openstack-nova-consoleauth.service
+        - openstack-nova-scheduler.service
+        - openstack-nova-conductor.service
+        - openstack-nova-novncproxy.service
