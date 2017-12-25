@@ -2,5 +2,4 @@
  - hosts: controller
    become: yes
    roles:
-        - common-services
         - controller

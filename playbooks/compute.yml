@@ -3,8 +3,9 @@
    become: yes
    tasks:
         - name: Install compute service on Controller
-          include_role: controller
-          tasks_from: nova.yml
+          include_role: 
+              name: controller
+              tasks_from: nova.yml
 
  - hosts: compute
    become: yes
