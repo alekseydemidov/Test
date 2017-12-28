@@ -119,8 +119,9 @@
       - restart openstack-nova
 
 - name: Nova configuration
-  template: src=nova.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
-  notify: restart openstack-nova
+  include_tasks: nova_conf.yml
+#  template: src=nova.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
+#  notify: restart openstack-nova
 
 - name: Enable access to the Placement API
   blockinfile: 
