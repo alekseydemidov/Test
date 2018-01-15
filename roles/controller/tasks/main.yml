@@ -100,15 +100,15 @@
         - openstack-glance-api.service
         - openstack-glance-registry.service
 
-- include_tasks: nova.yml
-- name: Check Compute services are up and running
-  service:
-        name: "{{ item }}"
-        enabled: yes
-        state: started
-  with_items:
-        - openstack-nova-api.service
-        - openstack-nova-consoleauth.service
-        - openstack-nova-scheduler.service
-        - openstack-nova-conductor.service
-        - openstack-nova-novncproxy.service
+#- include_tasks: nova.yml
+#- name: Check Compute services are up and running
+#  service:
+#        name: "{{ item }}"
+#        enabled: yes
+#        state: started
+#  with_items:
+#        - openstack-nova-api.service
+#        - openstack-nova-consoleauth.service
+#        - openstack-nova-scheduler.service
+#        - openstack-nova-conductor.service
+#        - openstack-nova-novncproxy.service

@@ -1,0 +1,2 @@
+[glance]
+api_servers = http://{{controller.private_fqdn}}:9292
