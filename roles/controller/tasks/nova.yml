@@ -118,20 +118,16 @@
       - Nova DB sync 
       - restart openstack-nova
 
-#- name: Nova configuration
-#  include_tasks: nova_conf.yml
-#  template: src=nova.conf dest=/etc/nova/nova.conf owner=root group=nova backup=yes
-#  notify: restart openstack-nova
 - name: Creation configuration directory
   file: path=/etc/nova/nova.conf.d state=directory owner=root group=nova mode=0750
 
 - name: Copy content configuration
   template: src={{item}} dest=/etc/nova/nova.conf.d
-  with_items: [nova.conf.d/api, nova.conf.d/api_database, nova.conf.d/database]
+  with_items: [nova.conf.d/DEFAULT, nova.conf.d/api, nova.conf.d/api_database, nova.conf.d/database, nova.conf.d/glance, nova.conf.d/keystone_authtoken, nova.conf.d/oslo_concurrency, nova.conf.d/placement, nova.conf.d/vnc]
 
 - name: Nova configuration
   assemble: backup=yes src=/etc/nova/nova.conf.d/ dest=/etc/nova/nova.conf owner=root group=nova mode=0640
-
+  notify: restart openstack-nova
 
 - name: Enable access to the Placement API
   blockinfile: 

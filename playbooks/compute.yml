@@ -8,12 +8,14 @@
               tasks_from: nova.yml
 
  - hosts: compute
+   tags: add-node
    become: yes
    roles:
         - common-services
         - compute
 
  - hosts: controller
+   tags: add-node
    become: yes
    tasks:
         - name: Discover compute hosts
