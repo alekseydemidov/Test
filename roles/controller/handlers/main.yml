@@ -83,3 +83,14 @@
         - openstack-nova-scheduler.service
         - openstack-nova-conductor.service
         - openstack-nova-novncproxy.service
+
+- name: restart openstack-nova-api
+  service: name=openstack-nova-api.service enabled=yes state=restarted
+
+- name: populate neutron DB
+  shell: 'neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head'
+  become_user: neutron
+
+- name: restart neutron-server
+  service: name=neutron-server.service enabled=yes state=restarted
+

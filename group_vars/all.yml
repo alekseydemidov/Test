@@ -30,3 +30,11 @@ nova:
     placement_user: placement
     placement_passwd: protect_placement
 
+neutron:
+    db_name: neutron
+    db_user: neutron
+    db_passwd: protect_neutron
+    user: neutron
+    passwd: protect_neutron
+    metadata_secret: meta_protect
+

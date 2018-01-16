@@ -1,0 +1,13 @@
+[neutron]
+url = http://{{controller.private_fqdn}}:9696
+auth_url = http://{{controller.private_fqdn}}:35357
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = RegionOne
+project_name = service
+username = {{neutron.user}}
+password = {{neutron.passwd}}
+service_metadata_proxy = true
+metadata_proxy_shared_secret = {{neutron.metadata_secret}}
+

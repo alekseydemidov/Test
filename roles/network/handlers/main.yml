@@ -1,0 +1,9 @@
+---
+- name: restart neutron-linuxbridge-agent
+  service: name=neutron-linuxbridge-agent.service enabled=yes state=restarted
+- name: restart neutron-l3-agent
+  service: name=neutron-l3-agent.service enabled=yes state=restarted
+- name: restart neutron-dhcp-agent
+  service: name=neutron-dhcp-agent.service enabled=yes state=restarted
+- name: restart neutron-metadata-agent
+  service: name=neutron-metadata-agent.service enabled=yes state=restarted
