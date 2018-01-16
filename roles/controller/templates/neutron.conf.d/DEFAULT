@@ -1,0 +1,9 @@
+[DEFAULT]
+core_plugin = ml2
+service_plugins = router
+allow_overlapping_ips = true
+transport_url = rabbit://{{rabbitmq.user}}:{{rabbitmq.passwd}}@{{controller.private_fqdn}}
+auth_strategy = keystone
+notify_nova_on_port_status_changes = true
+notify_nova_on_port_data_changes = true
+

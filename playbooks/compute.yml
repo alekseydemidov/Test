@@ -1,12 +1,21 @@
 ---
+ - hosts: controller
+   become: yes
+   tasks:
+        - name: Install compute service on Controller
+          include_role: 
+              name: controller
+              tasks_from: nova.yml
+
  - hosts: compute
+   tags: add-node
    become: yes
    roles:
-        - common
-        - ostack-common
-        - ostack-compute
+        - common-services
+        - compute
 
  - hosts: controller
+   tags: add-node
    become: yes
    tasks:
         - name: Discover compute hosts

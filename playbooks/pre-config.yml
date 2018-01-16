@@ -1,0 +1,5 @@
+---
+ - hosts: controller:compute:network:storage
+   become: yes
+   roles:
+        - common-services

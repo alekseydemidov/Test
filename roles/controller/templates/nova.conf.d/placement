@@ -1,0 +1,10 @@
+[placement]
+os_region_name = RegionOne
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://{{controller.private_fqdn}}:35357/v3
+username = {{nova.placement_user}}
+password = {{nova.placement_passwd}}
+

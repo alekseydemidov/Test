@@ -1,0 +1,54 @@
+- name: Required packages installation
+  yum:
+     name: policycoreutils-python, python-pip
+     state: present
+
+- name: NTP service installation
+  yum:
+     name: ntp
+     state: present
+
+- name: NTP service start
+  service:
+        name: ntpd
+        enabled: yes
+        state: started
+
+- name: NTP service configuration
+  copy: src=ntp.conf dest=/etc/ntp.conf mode=0644 owner=root group=root
+  notify:
+     - restart ntpd
+
+- name: Rsyslog service installation
+  yum:
+     name: rsyslog
+     state: present
+
+- name: Rsyslog service start
+  service:
+        name: rsyslog
+        enabled: yes
+        state: started
+
+- name: Rsyslog service configuration
+  copy: src=rsyslog.conf dest=/etc/rsyslog.conf mode=0644 owner=root group=root
+  notify:
+     - restart rsyslog
+
+- name: Enable the OpenStack repository
+  yum:
+    name: centos-release-openstack-pike
+    state: present
+
+- name: Install Openstack client and SELinux policies
+  yum:
+    name: python-openstackclient, openstack-selinux
+    state: present
+
+- name: Upgrading pip
+  pip: name=pip state=latest 
+
+- name: Install required python modules for cloud management
+  pip:
+    name: shade
+    state: present

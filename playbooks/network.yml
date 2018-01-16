@@ -1,0 +1,15 @@
+---
+ - hosts: controller
+   become: yes
+   tasks:
+        - name: Install compute service on Controller
+          include_role: 
+              name: controller
+              tasks_from: neutron.yml
+
+ - hosts: network
+   tags: network-node
+   become: yes
+   roles:
+        - common-services
+        - network

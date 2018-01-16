@@ -1,0 +1,3 @@
+[database]
+connection = mysql+pymysql://{{neutron.db_user}}:{{neutron.db_passwd}}@{{controller.private_fqdn}}/{{neutron.db_name}}
+

@@ -1,0 +1,5 @@
+[vnc]
+enabled = True
+vncserver_listen = $my_ip
+vncserver_proxyclient_address = $my_ip
+

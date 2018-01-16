@@ -2,6 +2,4 @@
  - hosts: controller
    become: yes
    roles:
-        - common
-        - ostack-common
-        - ostack-control
+        - controller

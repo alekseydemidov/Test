@@ -1,0 +1,11 @@
+[keystone_authtoken]
+auth_uri = http://{{controller.private_fqdn}}:5000
+auth_url = http://{{controller.private_fqdn}}:35357
+memcached_servers = {{controller.private_fqdn}}:11211
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = {{neutron.user}}
+password = {{neutron.passwd}}
+

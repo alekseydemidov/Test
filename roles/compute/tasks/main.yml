@@ -1,0 +1,31 @@
+- name: Nova install packages
+  yum:
+      name: openstack-nova-compute
+      state: present
+  notify: restart openstack-nova-compute
+
+- name: Creation configuration directory
+  file: path=/etc/nova/nova.conf.d state=directory owner=root group=nova mode=0750
+
+- name: Copy content configuration
+  template: src={{item}} dest=/etc/nova/nova.conf.d
+  with_items: [nova.conf.d/libvirt, nova.conf.d/vnc]
+  when: "'controller' in group_names"
+
+- name: Copy content configuration
+  template: src={{item}} dest=/etc/nova/nova.conf.d
+  with_items: [nova.conf.d/DEFAULT, nova.conf.d/api, nova.conf.d/glance, nova.conf.d/keystone_authtoken, nova.conf.d/libvirt, nova.conf.d/oslo_concurrency, nova.conf.d/placement, nova.conf.d/vnc]
+  when: "'controller' not in group_names"
+
+- name: Nova configuration
+  assemble: backup=yes src=/etc/nova/nova.conf.d/ dest=/etc/nova/nova.conf owner=root group=nova mode=0640
+  notify: restart openstack-nova-compute
+
+- name: Check Compute services are up and running
+  service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+  with_items:
+        - libvirtd.service
+        - openstack-nova-compute.service

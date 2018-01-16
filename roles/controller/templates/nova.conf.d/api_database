@@ -1,0 +1,3 @@
+[api_database]
+connection = mysql+pymysql://{{nova.db_user}}:{{nova.db_passwd}}@{{controller.private_fqdn}}/{{nova.db_api_name}}
+
