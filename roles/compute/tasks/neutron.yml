@@ -1,0 +1,33 @@
+---
+- name: Neutron install packages
+  yum:
+      name: openstack-neutron-linuxbridge, ebtables, ipset
+      state: present
+
+- name: Creation neutron configuration directory
+  file: path=/etc/neutron/neutron.conf.d state=directory owner=root group=neutron mode=0750
+
+- name: Copy content neutron configuration
+  template: src=neutron.conf.d/{{item}} dest=/etc/neutron/neutron.conf.d
+  with_items: [DEFAULT, keystone_authtoken, oslo_concurrency]
+
+- name: Neutron configuration
+  assemble: backup=yes src=/etc/neutron/neutron.conf.d/ dest=/etc/neutron/neutron.conf owner=root group=neutron mode=0640
+  notify: restart neutron-linuxbridge-agent
+
+- name: Configure Linux bridge agent
+  template: src=neutron.conf.d/linuxbridge_agent.ini dest=/etc/neutron/plugins/ml2/linuxbridge_agent.ini backup=yes
+  notify: restart neutron-linuxbridge-agent
+
+- name: Copy neutron configuration for nova
+  template: src=nova.conf.d/neutron dest=/etc/nova/nova.conf.d
+
+- name: Nova re-configuration
+  assemble: backup=yes src=/etc/nova/nova.conf.d/ dest=/etc/nova/nova.conf owner=root group=nova mode=0640
+  notify: restart openstack-nova-compute
+
+- name: Force all notified handlers
+  meta: flush_handlers
+
+- name: Check Network services are up and running
+  service: name=neutron-linuxbridge-agent.service enabled=yes state=started

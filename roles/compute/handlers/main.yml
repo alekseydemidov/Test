@@ -6,3 +6,7 @@
   with_items:
         - libvirtd.service
         - openstack-nova-compute.service
+
+- name: restart neutron-linuxbridge-agent
+  service: name=neutron-linuxbridge-agent.service enabled=yes state=restarted
+  
