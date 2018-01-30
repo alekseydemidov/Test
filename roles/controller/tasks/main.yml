@@ -100,7 +100,9 @@
         - openstack-glance-api.service
         - openstack-glance-registry.service
 
-#- include_tasks: nova.yml
+- include_tasks: horizon.yml
+  tags: dashboard
+  
 #- name: Check Compute services are up and running
 #  service:
 #        name: "{{ item }}"

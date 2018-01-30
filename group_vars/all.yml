@@ -38,3 +38,7 @@ neutron:
     passwd: protect_neutron
     metadata_secret: meta_protect
 
+dashboard:
+    allowed_hosts: ['*']
+    multidomain: False
+    timezone: Europe/Moscow
