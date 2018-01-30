@@ -1,6 +1,5 @@
 ---
 private_ip:  "{{ vars['ansible_'+iface_private]['ipv4']['address'] }}"
-external_ip: "{{ vars['ansible_'+iface_external]['ipv4']['address'] }}"
 OS_ENVIROMENT:
   OS_USERNAME: admin
   OS_PASSWORD: "{{keystone.admin_passwd}}"

@@ -1,0 +1,94 @@
+---
+- name: Cinder DB creation
+  mysql_db:
+        name: "{{ cinder.db_name }}"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+- name: Cinder Grant proper access
+  mysql_user:
+        name: "{{cinder.db_user}}"
+        password: "{{cinder.db_passwd}}"
+        host: "{{ item }}"
+        priv: "{{ cinder.db_name }}.*:ALL"
+        login_host: "{{ mysql.host }}"
+        login_user: "{{ mysql.root_user }}"
+        login_password: "{{ mysql.root_passwd }}"
+        state: present
+  with_items:
+        - "{{ mysql.host }}"
+        - "%"
+  notify: Reload db privileges
+
+- name: Cinder user creation
+  os_user:
+        name: "{{cinder.user}}"
+        password: "{{cinder.passwd}}"
+        update_password: on_create
+        description: Cinder Service Account
+        domain: default
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: Add the admin role to the cinder user and service project
+  os_user_role:
+        role: admin
+        user: "{{cinder.user}}"
+        project: service
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: cinder service entity creation
+  os_keystone_service:
+        name: "cinderv{{item}}"
+        service_type: "volumev{{item}}"
+        description: OpenStack Block Storage
+        state: present
+        wait: yes
+  with_items: [2,3]
+  environment: "{{OS_ENVIROMENT}}"
+
+- name: Create the Image service API endpoints
+  os_keystone_endpoint:
+        service: cinderv{{item[0]}}
+        interface: "{{item[1]}}"
+        url: http://{{controller.private_fqdn}}:8776/v{{item[0]}}/%(project_id)s
+        region: RegionOne
+        state: present
+        wait: yes
+  environment: "{{OS_ENVIROMENT}}"
+  with_nested:
+        - [2,3] 
+        - ['public', 'internal', 'admin']
+
+- name: cinder install packages
+  yum:
+      name: openstack-cinder
+      state: present
+  notify:
+      - cinder DB sync
+      - restart openstack-cinder
+
+- name: Creation cinder configuration directory
+  file: path=/etc/cinder/cinder.conf.d state=directory owner=root group=cinder mode=0750
+
+- name: Copy content configuration
+  template: src=cinder.conf.d/{{item}} dest=/etc/cinder/cinder.conf.d/
+  with_items: [default, database, keystone_authtoken, oslo_concurrency]
+
+- name: Cinder configuration
+  assemble: backup=yes src=/etc/cinder/cinder.conf.d/ dest=/etc/cinder/cinder.conf owner=root group=cinder mode=0640
+  notify: restart openstack-cinder
+
+- name: Force all notified handlers
+  meta: flush_handlers
+
+- name: Check Cinder services are up and running
+  service:
+        name: "{{item}}"
+        enabled: yes
+        state: started
+  with_items: ['openstack-cinder-api.service', 'openstack-cinder-scheduler.service']

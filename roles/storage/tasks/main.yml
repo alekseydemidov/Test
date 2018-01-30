@@ -1,2 +1,38 @@
-- name: The playbook for compute deployment
-  shell: echo "Hello Compute" 
+---
+- name: LVM install packages
+  yum:
+      name: lvm2, device-mapper-persistent-data
+      state: present
+- name: Start the LVM metadata service
+  service: name=lvm2-lvmetad.service enabled=yes state=started
+
+- name: Create the LVM physical volume
+  lvg:
+      vg: "{{cinder.vg_name}}"
+      pvs: "{{cinder.pvs}}"
+      state: present
+
+- name: Cinder install packages
+  yum:
+      name: openstack-cinder, targetcli, python-keystone
+      state: present
+
+- name: Creation cinder configuration directory
+  file: path=/etc/cinder/cinder.conf.d state=directory owner=root group=cinder mode=0750
+
+- name: Copy content configuration
+  template: src=cinder.conf.d/{{item}} dest=/etc/cinder/cinder.conf.d/
+  with_items: [default, database, keystone_authtoken, lvm, oslo_concurrency]
+
+- name: Cinder configuration
+  assemble: backup=yes src=/etc/cinder/cinder.conf.d/ dest=/etc/cinder/cinder.conf owner=root group=cinder mode=0640
+  notify: restart openstack-cinder
+
+- name: Force all notified handlers
+  meta: flush_handlers
+
+- name: Check Cinder services are up and running
+  service: name={{item}} enabled=yes state=started
+  with_items:
+    - openstack-cinder-volume.service
+    - target.service

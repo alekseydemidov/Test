@@ -1,0 +1,3 @@
+[oslo_concurrency]
+lock_path = /var/lib/nova/tmp
+

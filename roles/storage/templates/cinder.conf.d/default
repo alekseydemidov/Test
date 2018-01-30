@@ -1,0 +1,7 @@
+[DEFAULT]
+transport_url = rabbit://{{rabbitmq.user}}:{{rabbitmq.passwd}}@{{controller.private_fqdn}}
+auth_strategy = keystone
+my_ip = {{private_ip}}
+enabled_backends = lvm
+glance_api_servers = http://{{controller.private_fqdn}}:9292
+
