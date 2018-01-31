@@ -69,13 +69,13 @@
   template: src=etcd.conf.yml dest=/etc/etcd/etcd.conf.yml owner=etcd group=etcd
   notify: restart etcd
 
-- name: Etcd system unit configure
-  lineinfile:
-      path: /lib/systemd/system/etcd.service
-      regexp: '^ExecStart='
-      line: 'ExecStart=/usr/bin/etcd --config-file /etc/etcd/etcd.conf.yml'
-      backup: yes
-  notify: restart etcd
+#- name: Etcd system unit configure
+#  lineinfile:
+#      path: /lib/systemd/system/etcd.service
+#      regexp: '^ExecStart='
+#      line: 'ExecStart=/usr/bin/etcd --config-file /etc/etcd/etcd.conf.yml'
+#      backup: yes
+#  notify: restart etcd
 
 - name: Etcd start
   service:
