@@ -94,3 +94,13 @@
 - name: restart neutron-server
   service: name=neutron-server.service enabled=yes state=restarted
 
+- name: cinder DB sync
+  shell: 'cinder-manage db sync'
+  become_user: cinder
+
+- name: restart openstack-cinder
+  service:
+        name: "{{item}}"
+        enabled: yes
+        state: restarted
+  with_items: ['openstack-cinder-api.service', 'openstack-cinder-scheduler.service']

@@ -1,8 +1,0 @@
----
- - hosts: controller
-   become: yes
-   tasks:
-        - name: Test
-          include_role: 
-              name: controller
-              tasks_from: nova_conf.yml

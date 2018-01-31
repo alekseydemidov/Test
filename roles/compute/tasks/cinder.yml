@@ -1,0 +1,9 @@
+- name: Copy cinder configuration for nova
+  template: src=nova.conf.d/cinder dest=/etc/nova/nova.conf.d
+
+- name: Nova re-configuration
+  assemble: backup=yes src=/etc/nova/nova.conf.d/ dest=/etc/nova/nova.conf owner=root group=nova mode=0640
+  notify: restart openstack-nova-compute
+
+- name: Force all notified handlers
+  meta: flush_handlers

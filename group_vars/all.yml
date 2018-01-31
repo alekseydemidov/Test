@@ -38,3 +38,16 @@ neutron:
     passwd: protect_neutron
     metadata_secret: meta_protect
 
+cinder:
+    pvs: /dev/vda
+    vg_name: cinder_vg
+    db_name: cinder
+    db_user: cinder
+    db_passwd: protect_cinder
+    user: cinder
+    passwd: protect_cinder
+
+dashboard:
+    allowed_hosts: ['*']
+    multidomain: False
+    timezone: Europe/Moscow

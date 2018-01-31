@@ -1,0 +1,3 @@
+[database]
+connection = mysql+pymysql://{{cinder.db_user}}:{{cinder.db_passwd}}@{{controller.private_fqdn}}/{{cinder.db_name}}
+

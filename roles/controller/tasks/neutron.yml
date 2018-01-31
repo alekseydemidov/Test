@@ -47,7 +47,7 @@
 - name: Neutron service entity creation
   os_keystone_service:
         name: neutron
-        service_type: compute
+        service_type: network
         description: OpenStack Networking
         state: present
         wait: yes

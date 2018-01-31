@@ -1,0 +1,22 @@
+---
+ - hosts: controller
+   become: yes
+   tasks:
+        - name: Install storage service on Controller
+          include_role: 
+              name: controller
+              tasks_from: cinder.yml
+
+ - hosts: storage
+   tags: storage-node
+   become: yes
+   roles:
+        - storage
+
+ - hosts: compute
+   become: yes
+   tasks:
+        - name: Discover compute hosts
+          include_role: 
+              name: compute
+              tasks_from: cinder.yml
