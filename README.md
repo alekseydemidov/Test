@@ -11,10 +11,10 @@ Implemented compoments:
 4. compute.yml - install nova nodes (tags: add-node)
 5. network.yml - install neutron nodes (tags: network-node, compute-node)
 6. storage.yml - install cinder node (tags: storage-node)
-RUN: ansible-playbook playbooks/compute.yml
+Example: ansible-playbook playbooks/compute.yml
 
 ostack.yml - playbook to install all components (without updating os)
-RUN: ansible-playbook playbooks/ostack.yml
+Example: ansible-playbook playbooks/ostack.yml
 
 You can use free any code part or full code if you needed )
 Please feel you free to ask me if you have any questions or suggestions
