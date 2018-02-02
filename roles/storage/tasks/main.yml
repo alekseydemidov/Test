@@ -28,6 +28,9 @@
   assemble: backup=yes src=/etc/cinder/cinder.conf.d/ dest=/etc/cinder/cinder.conf owner=root group=cinder mode=0640
   notify: restart openstack-cinder
 
+- name: Be sure that oslo_concurrecy directory is exit
+  file: path=/var/lib/nova/tmp state=directory mode=1777
+
 - name: Force all notified handlers
   meta: flush_handlers
 
