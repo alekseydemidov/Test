@@ -14,6 +14,7 @@
         - storage
 
  - hosts: compute
+   tags:  add-node
    become: yes
    tasks:
         - name: Discover compute hosts
