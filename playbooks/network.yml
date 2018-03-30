@@ -14,7 +14,7 @@
         - network
 
  - hosts: compute
-   tags: compute-node
+   tags:  add-node
    become: yes
    tasks:
         - name: Install network service on Compute

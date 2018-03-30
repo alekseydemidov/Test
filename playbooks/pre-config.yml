@@ -1,5 +1,8 @@
 ---
  - hosts: controller:compute:network:storage
+   tags:  
+        - add-node
+        - network-node
    become: yes
    roles:
         - common-services
